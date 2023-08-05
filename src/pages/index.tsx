@@ -4,7 +4,6 @@ import Image from "next/image";
 
 export default function App() {
   const { data: session } = useSession();
-  console.log(session);
 
   const MyImage: any = session?.user?.image;
   return (
