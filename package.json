@@ -1,5 +1,5 @@
 {
-  "name": "laf--frontend",
+  "name": "full-auth",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -16,7 +16,9 @@
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.2",
     "firebase": "^9.21.0",
+    "mongoose": "^7.4.2",
     "next": "13.3.2",
+    "next-auth": "^4.22.3",
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
