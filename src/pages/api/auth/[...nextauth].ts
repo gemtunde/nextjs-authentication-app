@@ -4,8 +4,11 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import TwitterProvider from "next-auth/providers/twitter";
 import Auth0Provider from "next-auth/providers/auth0";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongodb";
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+
+//import { MongoDBAdapter } from "@auth/mongodb-adapter"; NOT working
+//npm install @next-auth/mongodb-adapter USE @next-auth for all adapter installations e,g firebase, mongodb, etc
 
 export default NextAuth({
   adapter: MongoDBAdapter(clientPromise),
