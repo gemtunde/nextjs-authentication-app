@@ -6,6 +6,8 @@ import TwitterProvider from "next-auth/providers/twitter";
 import Auth0Provider from "next-auth/providers/auth0";
 import clientPromise from "@/lib/mongodb";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import { Adapter } from "next-auth/adapters";
+import { JWT } from "next-auth/jwt";
 
 //import { MongoDBAdapter } from "@auth/mongodb-adapter"; NOT working
 //npm install @next-auth/mongodb-adapter USE @next-auth for all adapter installations e,g firebase, mongodb, etc
@@ -37,4 +39,36 @@ export default NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+  },
+  callbacks: {
+    async jwt({
+      token,
+      user,
+      account,
+      profile,
+      isNewUser,
+    }: {
+      token: JWT;
+      user?: any; //Adapter | undefined;
+      account?: any; // Account | null | undefined;
+      profile?: any; //Profile | undefined ;
+      isNewUser?: boolean;
+    }) {
+      // console.log(account);
+      if (user) {
+        token.provider = account?.provider;
+      }
+      //console.log(token);
+      return token;
+    },
+    async session({ session, token }: { session: any; token: JWT }) {
+      if (session.user) {
+        session.user.provider = token.provider;
+      }
+      //console.log(session.user);
+      return session;
+    },
+  },
 });

@@ -13,6 +13,7 @@ export default function App() {
         <div>
           <h1 className="text-red-600">Welcome {session?.user?.name}</h1>
           <h1 className="text-red-600">email - {session?.user?.email}</h1>
+          <h1 className="text-red-600">provider - {session?.user?.provider}</h1>
           {/* <Image
             alt="image"
             src={MyImage}
