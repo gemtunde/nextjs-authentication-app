@@ -11,7 +11,7 @@ export default function App() {
 
   //const MyImage: any = session?.user?.image;
   return (
-    <div className=" min-h-screen text-white flex items-center justify-center">
+    <div className="home min-h-screen text-white flex items-center justify-center">
       <div className="mx-auto">
         <div className="text-center">
           <h3 className="text-2xl mb-2 font-semibold">{session?.user?.name}</h3>

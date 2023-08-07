@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 
-body {
+.home{
     background-color: black;
     color: white;
 }
