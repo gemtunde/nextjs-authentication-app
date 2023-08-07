@@ -4,50 +4,57 @@ import Image from "next/image";
 
 export default function App() {
   const { data: session } = useSession();
+  const text1: string =
+    " Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi repudiandae quibusdam est iure exercitationem eaque maxime?";
+  const text2: string =
+    "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, magni. Omnis nulla accusantium animi, quam impedit aliquam? Adipisci aperiam iusto neque atque eos qui voluptates, in deserunt delectus, accusamus tempora voluptatem maxime?";
 
-  const MyImage: any = session?.user?.image;
+  //const MyImage: any = session?.user?.image;
   return (
-    <>
-      <h1 className="text-red-600">Next-Auth authentication nextjs app</h1>;
-      {session ? (
-        <div>
-          <h1 className="text-red-600">Welcome {session?.user?.name}</h1>
-          <h1 className="text-red-600">email - {session?.user?.email}</h1>
-          <h1 className="text-red-600">provider - {session?.user?.provider}</h1>
-          {/* <Image
-            alt="image"
-            src={MyImage}
-            //className="object-cover object-center w-full h-full block"
-            width="300"
-            height="500"
-          /> */}
-          <button
-            className="bg-red-700 text-white p-4 cursor-pointer"
-            onClick={() => signOut()}
-          >
-            Sign out
-          </button>
+    <div className=" min-h-screen text-white flex items-center justify-center">
+      <div className="mx-auto">
+        <div className="text-center">
+          <h3 className="text-2xl mb-2 font-semibold">{session?.user?.name}</h3>
         </div>
-      ) : (
-        <div>
-          <h1 className="text-red-600">You are not sign in</h1>
-          {/* <Image
-            alt="image"
-            src="https://dailypost.ng/wp-content/uploads/2023/02/Partey.jpg"
-            // src="data:image/jpeg;base64,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"
-            className="w-[50px] h-[50px] rounded-full"
-            width="300"
-            height="500"
-          /> */}
-          <button
-            className="bg-green-700 text-white p-4 cursor-pointer"
-            onClick={() => signIn()}
-          >
-            Sign In
-          </button>
+        <div className="text-center">
+          <h3 className="text-xs font-semibold">{session?.user?.email}</h3>
+          <h3 className="text-xs mb-2 mt-2 font-semibold text-red-500">
+            You logged in using{" "}
+            <span className="bg-blue-600 px-2 py-1 text-white capitalize">
+              {session?.user?.provider}
+            </span>
+          </h3>
         </div>
-      )}
-    </>
+        <div className="border border-white h-[200px] relative flex flex-col w-full rounded-lg">
+          <div className="w-full text-right">
+            <div className="py-6 px-3">
+              <button
+                onClick={() => signOut}
+                className="bg-blue-500 hover:bg-blue-700 text-md font-bold px-8 py-2 rounded-md sm:mr-2 mb-1 ease-linear transition-all duration-200"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+          <div className="flex justify-center mb-12 w-[50px]">
+            <Image
+              alt="image"
+              src={session?.user?.image!}
+              fill
+              className="w-[20px] h-[20px] rounded-full mt-16"
+            />
+          </div>
+        </div>
+        <div className="text-center mt-16 py-10 border-t">
+          <div className="flex flex-wrap justify-center">
+            <div className="w-full px-4">
+              <h3 className="text-sm mb-2 ">{text1}</h3>
+              <h3 className="text-xs mb-2 ">{text1}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
