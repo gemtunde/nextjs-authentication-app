@@ -29,7 +29,7 @@ export default function App() {
           <div className="w-full text-right">
             <div className="py-6 px-3">
               <button
-                onClick={() => signOut}
+                onClick={() => signOut()}
                 className="bg-blue-500 hover:bg-blue-700 text-md font-bold px-8 py-2 rounded-md sm:mr-2 mb-1 ease-linear transition-all duration-200"
               >
                 Logout
