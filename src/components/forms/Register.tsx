@@ -10,6 +10,8 @@ import validator from "validator";
 import { useState, useEffect } from "react";
 import zxcvbn from "zxcvbn";
 import SlideButton from "../buttons/SlideButton";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 interface IRegisterFormProps {}
 
@@ -55,8 +57,16 @@ const RegisterForm: React.FunctionComponent<IRegisterFormProps> = (props) => {
     resolver: zodResolver(FormSchema),
   });
 
-  const onSubmit = (data: any) => console.log(data);
-
+  // add to db
+  const onSubmit: SubmitHandler<FormSchemaType> = async (values) => {
+    try {
+      const { data } = await axios.post("/api/auth/signup", { ...values });
+      toast.success(data.message);
+    } catch (error: any) {
+      //  console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
   //validate password score
   const validatePasswordStrength = () => {
     let password = watch().password;
