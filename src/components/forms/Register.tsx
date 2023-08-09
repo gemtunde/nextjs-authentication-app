@@ -51,6 +51,7 @@ const RegisterForm: React.FunctionComponent<IRegisterFormProps> = (props) => {
   const {
     register,
     handleSubmit,
+    reset,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<FormSchemaType>({
@@ -61,6 +62,7 @@ const RegisterForm: React.FunctionComponent<IRegisterFormProps> = (props) => {
   const onSubmit: SubmitHandler<FormSchemaType> = async (values) => {
     try {
       const { data } = await axios.post("/api/auth/signup", { ...values });
+      reset();
       toast.success(data.message);
     } catch (error: any) {
       //  console.log(error);

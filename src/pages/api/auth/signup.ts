@@ -35,7 +35,7 @@ export default async function handler(
     if (user) {
       return res
         .status(400)
-        .json({ message: "This email address aleadt exist" });
+        .json({ message: "This email address aleady exist" });
     }
     const cryptedPassword = await bcrypt.hash(password, 12);
     const newUser = await new User({
