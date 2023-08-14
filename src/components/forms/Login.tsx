@@ -9,8 +9,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 
-interface ILoginFormProps {}
+interface ILoginFormProps {
+  callbackUrl: string;
+  csrfToken: string;
+}
 
 const FormSchema = z.object({
   email: z.string().email("Please enter a valid emaill address."),
@@ -23,13 +27,13 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 const LoginForm: React.FunctionComponent<ILoginFormProps> = (props) => {
+  const { callbackUrl, csrfToken } = props;
   const router = useRouter();
   const path = router.pathname;
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -37,12 +41,18 @@ const LoginForm: React.FunctionComponent<ILoginFormProps> = (props) => {
 
   // add to db
   const onSubmit: SubmitHandler<FormSchemaType> = async (values) => {
-    try {
-      const { data } = await axios.post("/api/auth/signup", { ...values });
-      reset();
-      toast.success(data.message);
-    } catch (error: any) {
-      toast.error(error.response.data.message);
+    const res: any = await signIn("credentials", {
+      redirect: false,
+      email: values.email,
+      password: values.password,
+      callbackUrl,
+    });
+    //console.log(res);
+    // toast.success(data.message);
+    if (res.error) {
+      return toast.error(res.error);
+    } else {
+      return router.push("/");
     }
   };
 
@@ -68,8 +78,14 @@ const LoginForm: React.FunctionComponent<ILoginFormProps> = (props) => {
           Sign Up
         </Link>
       </p>
-      <form className="w-full my-8 text-sm" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        method="post"
+        action="/api/auth/signin/email"
+        className="w-full my-8 text-sm"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div className="gap-2">
+          <input type="hidden" name="csrfToken" defaultValue={csrfToken} />
           <Input
             name="email"
             label="Email Address"

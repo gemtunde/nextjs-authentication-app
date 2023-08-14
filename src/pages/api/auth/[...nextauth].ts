@@ -1,45 +1,51 @@
-import NextAuth from "next-auth";
+import NextAuth, { Account, Profile, User } from "next-auth";
 import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
+import DiscordProvider from "next-auth/providers/discord";
 import TwitterProvider from "next-auth/providers/twitter";
 import Auth0Provider from "next-auth/providers/auth0";
-import clientPromise from "@/lib/mongodb";
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import { Adapter } from "next-auth/adapters";
-import { JWT } from "next-auth/jwt";
-import bcrypt from "bcryptjs";
-
 import CredentialsProvider from "next-auth/providers/credentials";
-import User from "@/components/models/User";
-//import { MongoDBAdapter } from "@auth/mongodb-adapter"; NOT working
-//npm install @next-auth/mongodb-adapter USE @next-auth for all adapter installations e,g firebase, mongodb, etc
 
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import clientPromise from "@/lib/mongodb";
+import { JWT } from "next-auth/jwt";
+import { Adapter, AdapterUser } from "next-auth/adapters";
+//import connectDb from "@/components/utils/connectDb";
+import UserModal from "@/components/models/User";
+import bcrypt from "bcryptjs";
+import connectDb from "@/utils/connectDB";
 export default NextAuth({
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Name", type: "text" },
-        password: { label: "Password", type: "password" },
+        email: {
+          label: "Name",
+          type: "text",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+        },
       },
-      async authorize(credentials, req) {
-        const user = await User.findOne({ email: credentials!.email });
+      async authorize(credentials) {
+        await connectDb();
+        const user = await UserModal.findOne({ email: credentials!.email });
         if (!user) {
-          throw new Error("Email is not registered");
+          throw new Error("Email is not registered.");
         }
         const isPasswordCorrect = await bcrypt.compare(
           credentials!.password,
           user.password
         );
         if (!isPasswordCorrect) {
-          throw new Error("Password incorrct");
+          throw new Error("Password is incorrect.");
         }
         return user;
       },
     }),
-    // OAuth authentication providers...
     GoogleProvider({
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
@@ -51,6 +57,10 @@ export default NextAuth({
     GitHubProvider({
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
+    }),
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID as string,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
     }),
     TwitterProvider({
       clientId: process.env.TWITTER_CLIENT_ID as string,
@@ -66,6 +76,9 @@ export default NextAuth({
   session: {
     strategy: "jwt",
   },
+  pages: {
+    signIn: "/auth",
+  },
   callbacks: {
     async jwt({
       token,
@@ -75,22 +88,20 @@ export default NextAuth({
       isNewUser,
     }: {
       token: JWT;
-      user?: any; //Adapter | undefined;
-      account?: any; // Account | null | undefined;
-      profile?: any; //Profile | undefined ;
-      isNewUser?: boolean;
+      user?: User | Adapter | undefined;
+      account?: Account | null | undefined;
+      profile?: Profile | undefined;
+      isNewUser?: boolean | undefined;
     }) {
       if (user) {
         token.provider = account?.provider;
       }
-
       return token;
     },
     async session({ session, token }: { session: any; token: JWT }) {
       if (session.user) {
         session.user.provider = token.provider;
       }
-
       return session;
     },
   },
