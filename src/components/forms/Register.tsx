@@ -12,6 +12,7 @@ import zxcvbn from "zxcvbn";
 import SlideButton from "../buttons/SlideButton";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 interface IRegisterFormProps {}
 
@@ -65,7 +66,6 @@ const RegisterForm: React.FunctionComponent<IRegisterFormProps> = (props) => {
       reset();
       toast.success(data.message);
     } catch (error: any) {
-      //  console.log(error);
       toast.error(error.response.data.message);
     }
   };
@@ -79,112 +79,126 @@ const RegisterForm: React.FunctionComponent<IRegisterFormProps> = (props) => {
     setPasswordScore(validatePasswordStrength());
   }, [watch().password]);
   return (
-    <form className="my-8 text-sm" onSubmit={handleSubmit(onSubmit)}>
-      <div className="gap-2">
-        <Input
-          name="first_name"
-          label="First Name"
-          type="text"
-          icon={<CiUser />}
-          placeholder="first name"
-          register={register}
-          error={errors?.first_name?.message}
-          disabled={isSubmitting}
-        />
-        <Input
-          name="last_name"
-          label="Last Name"
-          type="text"
-          icon={<CiUser />}
-          placeholder="last name"
-          register={register}
-          error={errors?.last_name?.message}
-          disabled={isSubmitting}
-        />
-        <Input
-          name="email"
-          label="Email Address"
-          type="text"
-          icon={<FiMail />}
-          placeholder="email@email.com"
-          register={register}
-          error={errors?.email?.message}
-          disabled={isSubmitting}
-        />
-        <Input
-          name="phone"
-          label="Phone Number"
-          type="text"
-          icon={<BsTelephone />}
-          placeholder="+(xxx) xxx xxx xxx"
-          register={register}
-          error={errors?.phone?.message}
-          disabled={isSubmitting}
-        />
-        <Input
-          name="password"
-          label="Password"
-          type="password"
-          icon={<FiLock />}
-          placeholder="***********"
-          register={register}
-          error={errors?.password?.message}
-          disabled={isSubmitting}
-        />
-        {watch().password?.length > 0 && (
-          <div className="flex mt-2">
-            {Array.from(Array(5).keys()).map((span, i) => (
-              <span className="w-1/5 px-1" key={i}>
-                <div
-                  className={`h-2 rounded-xl ${
-                    passwordScore <= 2
-                      ? "bg-red-400"
-                      : passwordScore < 4
-                      ? "bg-yellow-400"
-                      : "bg-green-400"
-                  }`}
-                ></div>
-              </span>
-            ))}
-          </div>
-        )}
-        <Input
-          name="confirmpassword"
-          label="Confirm Password"
-          type="password"
-          icon={<FiLock />}
-          placeholder="***********"
-          register={register}
-          error={errors?.confirmpassword?.message}
-          disabled={isSubmitting}
-        />
-        <input
-          type="checkbox"
-          id="accpent"
-          className="mr-2 focus:ring rounded"
-          {...register("accept")}
-        />
-        <label htmlFor="accept" className="text-gray-700 my-4">
-          {" "}
-          I accept the{" "}
-          <a href="" target="_blank" className="text-blue-500 cursor-pointer">
-            Terms and Conditions
-          </a>
-        </label>
-        <div>
-          {errors?.accept && (
-            <p className="text-red-600 text-sm">{errors?.accept?.message}</p>
+    <div className="w-full px-12 py-4">
+      <h2 className="text-center text-2xl font-bold text-gray-800 tracking-wide">
+        Sign up
+      </h2>
+      <p className="text-center text-sm text-gray-600 mt-2">
+        You already have an account ?
+        <Link
+          href="/auth"
+          className="cursor-pointer bg-blue-500 ml-2 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+        >
+          Sign In
+        </Link>
+      </p>
+      <form className="w-full my-8 text-sm" onSubmit={handleSubmit(onSubmit)}>
+        <div className="gap-2">
+          <Input
+            name="first_name"
+            label="First Name"
+            type="text"
+            icon={<CiUser />}
+            placeholder="first name"
+            register={register}
+            error={errors?.first_name?.message}
+            disabled={isSubmitting}
+          />
+          <Input
+            name="last_name"
+            label="Last Name"
+            type="text"
+            icon={<CiUser />}
+            placeholder="last name"
+            register={register}
+            error={errors?.last_name?.message}
+            disabled={isSubmitting}
+          />
+          <Input
+            name="email"
+            label="Email Address"
+            type="text"
+            icon={<FiMail />}
+            placeholder="email@email.com"
+            register={register}
+            error={errors?.email?.message}
+            disabled={isSubmitting}
+          />
+          <Input
+            name="phone"
+            label="Phone Number"
+            type="text"
+            icon={<BsTelephone />}
+            placeholder="+(xxx) xxx xxx xxx"
+            register={register}
+            error={errors?.phone?.message}
+            disabled={isSubmitting}
+          />
+          <Input
+            name="password"
+            label="Password"
+            type="password"
+            icon={<FiLock />}
+            placeholder="***********"
+            register={register}
+            error={errors?.password?.message}
+            disabled={isSubmitting}
+          />
+          {watch().password?.length > 0 && (
+            <div className="flex mt-2">
+              {Array.from(Array(5).keys()).map((span, i) => (
+                <span className="w-1/5 px-1" key={i}>
+                  <div
+                    className={`h-2 rounded-xl ${
+                      passwordScore <= 2
+                        ? "bg-red-400"
+                        : passwordScore < 4
+                        ? "bg-yellow-400"
+                        : "bg-green-400"
+                    }`}
+                  ></div>
+                </span>
+              ))}
+            </div>
           )}
+          <Input
+            name="confirmpassword"
+            label="Confirm Password"
+            type="password"
+            icon={<FiLock />}
+            placeholder="***********"
+            register={register}
+            error={errors?.confirmpassword?.message}
+            disabled={isSubmitting}
+          />
+          <input
+            type="checkbox"
+            id="accpent"
+            className="mr-2 focus:ring rounded"
+            {...register("accept")}
+          />
+          <label htmlFor="accept" className="text-gray-700 my-4">
+            {" "}
+            I accept the{" "}
+            <a href="" target="_blank" className="text-blue-500 cursor-pointer">
+              Terms and Conditions
+            </a>
+          </label>
+          <div>
+            {errors?.accept && (
+              <p className="text-red-600 text-sm">{errors?.accept?.message}</p>
+            )}
+          </div>
+          <SlideButton
+            type="submit"
+            text="Sign Up"
+            slide_text="Secure Sign Up"
+            icon={<FiLock />}
+            disabled={isSubmitting}
+          />
         </div>
-        <SlideButton
-          type="submit"
-          text="Sign Up"
-          slide_text="Secure Sign Up"
-          icon={<FiLock />}
-          disabled={isSubmitting}
-        />
-      </div>
-    </form>
+      </form>
+    </div>
   );
 };
 
