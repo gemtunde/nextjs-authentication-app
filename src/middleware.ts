@@ -13,6 +13,11 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/auth`);
     }
   }
+  if (pathname === "/product") {
+    if (!session) {
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/auth`);
+    }
+  }
   if (pathname === "/auth") {
     if (session) {
       return NextResponse.redirect(`${origin}`);
