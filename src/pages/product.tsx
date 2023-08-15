@@ -6,6 +6,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SlideButton from "@/components/buttons/SlideButton";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 interface IProductProps {}
 
@@ -27,10 +29,7 @@ const ProductSchema = z.object({
     .string()
     .min(1, "Product Quantity must be more than 3 letters")
     .max(4, "Product Quantity must be at most 4 letters"),
-  product_image: z
-    .string()
-    .min(3, "Product image must be more than 3 letters")
-    .max(1024, "Product image must be at most 1024 letters"),
+  product_image: z.string(),
 });
 
 type ProductSchemaType = z.infer<typeof ProductSchema>;
@@ -47,12 +46,19 @@ const Product: React.FunctionComponent<IProductProps> = (props) => {
 
   //add to db
   const onSubmit: SubmitHandler<ProductSchemaType> = async (values: any) => {
-    const data: any = {
+    const formData: any = {
       ...values,
       product_price: Number(values.product_price),
       product_quantity: Number(values.product_quantity),
     };
-    console.log(data);
+    // console.log(data);
+    try {
+      const { data } = await axios.post("/api/auth/product", { ...formData });
+      reset();
+      toast.success(data.message);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
   };
   return (
     <div className="w-full px-12 py-6 flex flex-col items-center justify-center gap-2 ">
